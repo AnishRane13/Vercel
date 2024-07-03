@@ -1,6 +1,6 @@
 const MAX_LEN = 5;
 
-function generate() {
+export function generate() {
     let ans = "";
     const subset = "123455ufhhjdfcjbjdbchbsabcadshjsd";
 
@@ -9,3 +9,5 @@ function generate() {
     }
     return ans;
 }
+
+console.log(generate());
