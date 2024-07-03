@@ -13,7 +13,9 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "@redis/client": "^1.5.17",
     "aws-sdk": "^2.1653.0",
+    "redis": "^4.6.15",
     "redix": "^1.0.22"
   }
 }
