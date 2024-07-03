@@ -25,14 +25,21 @@ app.use(express_1.default.json());
 app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repoUrl = req.body.repoUrl;
     const id = (0, utils_1.generate)(); // asd12
-    yield (0, simple_git_1.default)().clone(repoUrl, path_1.default.join(__dirname, `output/${id}`));
-    const files = (0, file_1.getAllFiles)(path_1.default.join(__dirname, `output/${id}`));
-    files.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, aws_1.uploadFile)(file.slice(__dirname.length + 1), file);
-    }));
-    // put this to s3
-    res.json({
-        id: id
-    });
+    const localPath = path_1.default.join(__dirname, `output/${id}`);
+    try {
+        yield (0, simple_git_1.default)().clone(repoUrl, localPath);
+        const files = (0, file_1.getAllFiles)(localPath);
+        for (const file of files) {
+            const s3FilePath = path_1.default.relative(__dirname, file).replace(/\\/g, '/'); // Replace backslashes with forward slashes
+            yield (0, aws_1.uploadFile)(s3FilePath, file);
+        }
+        res.json({ id: id });
+    }
+    catch (error) {
+        console.error("Error deploying repository:", error);
+        res.status(500).json({ error: "Failed to deploy repository" });
+    }
 }));
-app.listen(3000);
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+});
