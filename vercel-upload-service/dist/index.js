@@ -19,6 +19,9 @@ const path_1 = __importDefault(require("path"));
 const utils_1 = require("./utils");
 const file_1 = require("./file");
 const aws_1 = require("./aws");
+const redis_1 = require("redis");
+const publisher = (0, redis_1.createClient)();
+publisher.connect();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -33,6 +36,7 @@ app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             const s3FilePath = path_1.default.relative(__dirname, file).replace(/\\/g, '/'); // Replace backslashes with forward slashes
             yield (0, aws_1.uploadFile)(s3FilePath, file);
         }
+        publisher.lPush("build-queue", id);
         res.json({ id: id });
     }
     catch (error) {
