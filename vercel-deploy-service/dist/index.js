@@ -17,9 +17,9 @@ function main() {
     return __awaiter(this, void 0, void 0, function* () {
         while (1) {
             const res = yield subscriber.brPop((0, redis_1.commandOptions)({ isolated: true }), 'build-queue', 0);
-            // @ts-ignore
+            // @ts-ignore;
             const id = res.element;
-            yield (0, aws_1.downloadS3Folder)(`/output/${id}`);
+            yield (0, aws_1.downloadS3Folder)(`output/${id}`);
             console.log("downloaded");
             // console.log(response)
         }
