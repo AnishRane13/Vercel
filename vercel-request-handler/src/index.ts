@@ -18,7 +18,7 @@ app.get("/*", async (req, res) => {
 
     const contents = await s3.getObject({
         Bucket: "vercel",
-        Key: `dist/${id}${filePath}`
+        Key: `output/${id}${filePath}`
     }).promise();
     
     const type = filePath.endsWith("html") ? "text/html" : filePath.endsWith("css") ? "text/css" : "application/javascript"

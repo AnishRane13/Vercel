@@ -14,6 +14,8 @@ const aws_1 = require("./aws");
 const utils_1 = require("./utils");
 const subscriber = (0, redis_1.createClient)();
 subscriber.connect();
+const publisher = (0, redis_1.createClient)();
+publisher.connect();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         while (1) {
@@ -22,8 +24,8 @@ function main() {
             const id = res.element;
             yield (0, aws_1.downloadS3Folder)(`output/${id}`);
             yield (0, utils_1.buildProject)(id);
-            yield (0, aws_1.copyFinalDist)(id);
-            // console.log(response)
+            (0, aws_1.copyFinalDist)(id);
+            publisher.hSet("status", id, "deployed");
         }
     });
 }

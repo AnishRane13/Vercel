@@ -32,9 +32,10 @@ app.post("/deploy", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const id = (0, utils_1.generate)(); // asd12
     yield (0, simple_git_1.default)().clone(repoUrl, path_1.default.join(__dirname, `output/${id}`));
     const files = (0, file_1.getAllFiles)(path_1.default.join(__dirname, `output/${id}`));
-    files.forEach((file) => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, aws_1.uploadFile)(file.slice(__dirname.length + 1), file);
-    }));
+    for (const file of files) {
+        const s3FilePath = path_1.default.relative(__dirname, file).replace(/\\/g, '/'); // Replace backslashes with forward slashes
+        yield (0, aws_1.uploadFile)(s3FilePath, file);
+    }
     yield new Promise((resolve) => setTimeout(resolve, 5000));
     publisher.lPush("build-queue", id);
     // INSERT => SQL
